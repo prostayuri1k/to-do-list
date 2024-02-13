@@ -1,0 +1,12 @@
+li:not(:last-child) {
+    margin-bottom: 20px;
+}
+
+.todo-btn {
+    text-align: left;
+}
+
+.todo.completed  .todo-btn span{
+    text-decoration: line-through;
+    color: darkgray;
+}

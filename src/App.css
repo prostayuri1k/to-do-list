@@ -1,0 +1,33 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+li {
+  list-style-type: none;
+}
+
+.App {
+  text-align: center;
+  background-color: #8758ff;
+  min-height: 100vh;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.App-wrapper {
+  margin: 0 auto;
+  width: 50%;
+  background-color: #1a1a40;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.todo-field {
+  width: 100%;
+}
+
+
