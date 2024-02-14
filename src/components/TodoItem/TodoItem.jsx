@@ -2,8 +2,9 @@ import React, {useState} from 'react';
 import {Button, Space} from "antd";
 import {DeleteFilled, EditFilled} from "@ant-design/icons";
 import './TodoItem.css'
+import {withLoggerTodoItem} from "../withLogger/withLogger";
 
-const TodoItem = ({title, id, completed, remove, edit}) => {
+const TodoItem = ({title, id, completed, remove, edit, handleTask}) => {
 
     const [checked, setChecked] = useState(completed);
 
@@ -22,7 +23,10 @@ const TodoItem = ({title, id, completed, remove, edit}) => {
                 <Button
                     className='todo-btn'
                     style={{display: 'block', width: '100%'}}
-                    onClick={() => setChecked(!checked)}
+                    onClick={() => {
+                        setChecked(!checked);
+                        handleTask(checked);
+                    }}
                 >
                     {title}
                 </Button>
@@ -38,3 +42,5 @@ const TodoItem = ({title, id, completed, remove, edit}) => {
 };
 
 export default TodoItem;
+
+export const TodoItemWithLogger = withLoggerTodoItem(TodoItem);

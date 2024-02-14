@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {Button, Input, Space} from "antd";
+import {withLoggerEditItem} from "../components/withLogger/withLogger";
 
 const EditTodo = ({title, id, update}) => {
 
@@ -26,3 +27,5 @@ const EditTodo = ({title, id, update}) => {
 };
 
 export default EditTodo;
+
+export const EditTodoWithLogger = withLoggerEditItem(EditTodo);

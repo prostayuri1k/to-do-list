@@ -59,7 +59,7 @@ const TodoField = () => {
                 >Add task
                 </Button>
             </Space.Compact>
-            <TodoList todos={todos} edit={editTodo} remove={removeTodo} update={updateTodo}/>
+            {todos?.length ? (<TodoList todos={todos} edit={editTodo} remove={removeTodo} update={updateTodo}/>) : (<></>)}
         </div>
     );
 };
