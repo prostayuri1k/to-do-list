@@ -1,0 +1,19 @@
+.input_wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.input {
+    width: 70%;
+}
+
+.input_title {
+    min-width: 30%;
+    margin-right: 10px;
+}
+
+.error_message {
+    color: #c94f4f;
+    font-size: 0.75rem;
+}
+

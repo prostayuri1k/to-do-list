@@ -1,6 +1,6 @@
 import React from 'react';
 import {TodoItemWithLogger} from "../TodoItem/TodoItem";
-import {EditTodoWithLogger} from "../../EditTodo/EditTodo";
+import {EditTodoWithLogger} from "../EditTodo/EditTodo";
 
 
 const TodoList = ({todos , remove, edit, update}) => {

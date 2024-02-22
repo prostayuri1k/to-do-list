@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Button, Input, Space} from "antd";
-import {withLoggerEditItem} from "../components/withLogger/withLogger";
+import {withLoggerEditItem} from "../withLogger/withLogger";
 
 const EditTodo = ({title, id, update}) => {
 
