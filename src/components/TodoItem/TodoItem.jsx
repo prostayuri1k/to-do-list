@@ -1,17 +1,14 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Button, Space} from "antd";
 import {DeleteFilled, EditFilled} from "@ant-design/icons";
 import './TodoItem.css'
 import {withLoggerTodoItem} from "../withLogger/withLogger";
 
-const TodoItem = ({title, id, completed, remove, edit, handleTask}) => {
-
-    const [checked, setChecked] = useState(completed);
-
+const TodoItem = ({title, id, isCompleted, remove, edit, handleTask, complete}) => {
 
     const cls = ['todo'];
 
-    if (checked) {
+    if (isCompleted) {
         cls.push('completed');
     }
 
@@ -24,8 +21,8 @@ const TodoItem = ({title, id, completed, remove, edit, handleTask}) => {
                     className='todo-btn'
                     style={{display: 'block', width: '100%'}}
                     onClick={() => {
-                        setChecked(!checked);
-                        handleTask(checked);
+                        complete(id);
+                        handleTask(isCompleted);
                     }}
                 >
                     {title}

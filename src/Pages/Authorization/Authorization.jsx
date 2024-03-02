@@ -3,38 +3,34 @@ import {Controller, useForm} from "react-hook-form";
 import {Button, Input} from "antd";
 import s from './Authorization.module.css';
 import {NavLink, useNavigate} from "react-router-dom";
+import axios from "axios";
 
 const Authorization = () => {
-    const navigate = useNavigate();
     const {control, handleSubmit, formState: {errors}} = useForm();
+    const navigate = useNavigate();
 
-    async function authorize (data) {
-        let options = {
-            method: 'POST',
-            headers: {
-                'accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        };
-        let response = await fetch('https://todo-redev.herokuapp.com/api/auth/login', options);
-        let result = await response.json();
-        if(response.ok) {
-            localStorage.setItem('token', result.token);
-            if(localStorage.getItem('token') === result.token) {
+    const authorizeUser = async (data) => {
+        try {
+            let response = await axios.post('https://todo-redev.herokuapp.com/api/auth/login', data);
+            if (response.statusText === 'OK') {
+                let {token} = response.data;
+                localStorage.setItem('token', token);
                 navigate('/todo')
             }
+        } catch (error) {
+            console.log('Ошибка', error)
         }
     }
+
     const onSubmit = (data) => {
-        authorize(data);
+        authorizeUser(data);
     }
 
     return (
         <div className='App-container'>
             <div className='App-wrapper'>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <div>
+                    <div className={s.input_field}>
                         <label>
                             email
                         </label>
@@ -50,14 +46,14 @@ const Authorization = () => {
                             }}
                             render={({field}) =>
                                 <Input
-                                    rootClassName={s.input}
                                     {...field}
                                     placeholder='dino_saur_cream@gmail.com'
                                 />}
                         />
+                        {errors.email && <p className={s.error_message}>{errors.email?.message}</p>}
                     </div>
-                    <p className={s.error_message}>{errors.email?.message}</p>
-                    <div>
+
+                    <div className={s.input_field}>
                         <label>
                             password
                         </label>
@@ -77,19 +73,17 @@ const Authorization = () => {
                             }}
                             render={({field}) =>
                                 <Input.Password
-                                    rootClassName={s.input}
                                     {...field}
                                     placeholder='Secret_info123'
                                 />}
                         />
+                        {errors.password && <p className={s.error_message}>{errors.password?.message}</p>}
                     </div>
-                    <p className={s.error_message}>{errors.password?.message}</p>
                     <Button type={"primary"} htmlType={"submit"}>Log In</Button>
                 </form>
             </div>
-            <p>Don't have an account? <NavLink to='/'>Sign Up!</NavLink></p>
+            <p>Don't have an account? <NavLink to='/to-do-list'>Sign Up!</NavLink></p>
         </div>
-
     );
 };
 

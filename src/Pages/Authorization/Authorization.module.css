@@ -1,8 +1,14 @@
-.input {
-    margin-top: 10px
-}
-
 .error_message {
     color: #c94f4f;
     font-size: 0.75rem;
+    margin: 0;
+}
+
+.input_field {
+    margin-bottom: 15px;
+}
+
+.input_field label {
+    display: block;
+    margin-bottom: 10px;
 }

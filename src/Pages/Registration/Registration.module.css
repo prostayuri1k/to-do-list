@@ -1,3 +1,7 @@
+.input_label_error {
+    margin-bottom: 20px;
+}
+
 .input_wrapper {
     display: flex;
     align-items: center;
@@ -15,5 +19,6 @@
 .error_message {
     color: #c94f4f;
     font-size: 0.75rem;
+    margin: 0;
 }
 

@@ -1,33 +1,95 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import TodoList from "../TodoList/TodoList";
 import {Button, Input, Space} from "antd";
 import {NavLink} from "react-router-dom";
-
-const {v4: uuidv4} = require('uuid');
-
+import axios from "axios";
 
 const TodoField = () => {
 
     const [todoTitle, setTodoTitle] = useState('')
     const [todos, setTodos] = useState([]);
 
-    const addTodo = () => {
-        if (todoTitle.trim()) {
-            setTodos([
-                ...todos,
+    const fetchTodos = async () => {
+        try {
+            let response = await axios.get(
+                'https://todo-redev.herokuapp.com/api/todos',
                 {
-                    id: uuidv4(),
-                    title: todoTitle,
-                    completed: false,
-                    isEdit: false
+                    method: "GET",
+                    headers: {
+                        'accept': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
                 }
-            ]);
-            setTodoTitle('');
+            );
+            setTodos(response.data)
+        } catch (error) {
+            console.log('Ошибка', error)
         }
     }
 
-    const removeTodo = (id) => {
-        setTodos(todos.filter(item => item.id !== id));
+    useEffect(() => {
+        fetchTodos();
+    }, []);
+
+    const addTodo = async () => {
+        if (!todoTitle.trim()) return;
+        let newTodo = {title: todoTitle};
+
+        try {
+            const response = axios.post(
+                'https://todo-redev.herokuapp.com/api/todos',
+                newTodo,
+                {
+                    headers: {
+                        'accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                }
+            )
+            const addedTask = (await response).data;
+            setTodos(prevTodos => [...prevTodos, addedTask]);
+            setTodoTitle('');
+        } catch (error) {
+            console.log('Ошибка', error);
+        }
+    }
+
+    const removeTodo = async (id) => {
+        try {
+            await axios.delete(
+                `https://todo-redev.herokuapp.com/api/todos/${id}`,
+                {
+                    headers: {
+                        'accept': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                }
+            )
+            setTodos(todos.filter(item => item.id !== id));
+        } catch (error) {
+            console.log('Ошибка', error);
+        }
+    };
+
+    const completeTodo = async (id) => {
+        try {
+            await axios.patch(
+                `https://todo-redev.herokuapp.com/api/todos/${id}/isCompleted`,
+                id,
+                {
+                    headers: {
+                        'accept': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                }
+            )
+        } catch (error) {
+            console.log(error)
+        }
+        setTodos(
+            todos.map(item => item.id === id ? {...item, isCompleted: !item.isCompleted} : item)
+        )
     }
 
     const editTodo = (id) => {
@@ -36,7 +98,22 @@ const TodoField = () => {
         )
     }
 
-    const updateTodo = (id, task) => {
+    const updateTodo = async (id, task) => {
+        try {
+            await axios.patch(
+                `https://todo-redev.herokuapp.com/api/todos/${id}`,
+                {title: task},
+                {
+                    headers: {
+                        'accept': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            )
+        } catch (error) {
+            console.log(error)
+        }
         setTodos(
             todos.map(item => item.id === id && task.trim() ? {...item, title: task, isEdit: !item.isEdit} : item)
         )
@@ -44,9 +121,7 @@ const TodoField = () => {
 
     const logout = () => {
         localStorage.removeItem('token');
-        console.log(localStorage);
     }
-
 
     return (
         <div className='App-container'>
@@ -69,7 +144,8 @@ const TodoField = () => {
                         </Button>
                     </Space.Compact>
                     {todos?.length ? (
-                        <TodoList todos={todos} edit={editTodo} remove={removeTodo} update={updateTodo}/>) : (<></>)}
+                        <TodoList todos={todos} edit={editTodo} remove={removeTodo} update={updateTodo}
+                                  complete={completeTodo}/>) : (<></>)}
                 </div>
             </div>
             <p><NavLink onClick={logout} to='/authorization'>Log Out</NavLink></p>

@@ -3,8 +3,8 @@ import React, {useEffect} from 'react';
 export const withLoggerTodoItem = (WrappedComponent) => {
     return (props) => {
 
-        const handleTask = (isChecked) => {
-            (!isChecked) ? console.log(`Task: ${props.title} completed`) : console.log(`Task ${props.title} uncompleted`);
+        const handleTask = (isCompleted) => {
+            (!isCompleted) ? console.log(`Task: ${props.title} completed`) : console.log(`Task ${props.title} uncompleted`);
         }
 
         useEffect(() => {
@@ -12,12 +12,7 @@ export const withLoggerTodoItem = (WrappedComponent) => {
             return () => {
                 console.log(`Deleted task: ${props.title}`)
             }
-        }, [])
-
-        useEffect(() => {
-
         }, []);
-
         return <WrappedComponent {...props} handleTask={handleTask} />;
     };
 };
