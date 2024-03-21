@@ -1,17 +1,16 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Button, Space} from "antd";
 import {DeleteFilled, EditFilled} from "@ant-design/icons";
 import './TodoItem.css'
 import {withLoggerTodoItem} from "../withLogger/withLogger";
+import {useDispatch} from "react-redux";
+import {completeTodo, deleteTodo, editTodo} from "../../redux/actions/todoListAction";
 
-const TodoItem = ({title, id, completed, remove, edit, handleTask}) => {
+const TodoItem = ({title, id, isCompleted}) => {
 
-    const [checked, setChecked] = useState(completed);
-
-
+    const dispatch = useDispatch();
     const cls = ['todo'];
-
-    if (checked) {
+    if (isCompleted) {
         cls.push('completed');
     }
 
@@ -23,17 +22,14 @@ const TodoItem = ({title, id, completed, remove, edit, handleTask}) => {
                 <Button
                     className='todo-btn'
                     style={{display: 'block', width: '100%'}}
-                    onClick={() => {
-                        setChecked(!checked);
-                        handleTask(checked);
-                    }}
+                    onClick={() => dispatch(completeTodo(id))}
                 >
                     {title}
                 </Button>
-                <Button onClick={() => edit(id)}>
+                <Button onClick={() => dispatch(editTodo(id))}>
                     <EditFilled/>
                 </Button>
-                <Button onClick={() => remove(id)}>
+                <Button onClick={() => dispatch(deleteTodo(id))}>
                     <DeleteFilled/>
                 </Button>
             </Space.Compact>

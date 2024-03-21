@@ -1,10 +1,15 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Button, Input, Space} from "antd";
 import {withLoggerEditItem} from "../withLogger/withLogger";
+import {useDispatch, useSelector} from "react-redux";
+import {addText} from "../../redux/actions/formActions";
+import {updateTodo} from "../../redux/actions/todoListAction";
 
-const EditTodo = ({title, id, update}) => {
+const EditTodo = ({id}) => {
 
-    const [updatedTitle, setUpdatedTitle] = useState(title)
+    const dispatch = useDispatch();
+    const {text} = useSelector(state => state.form)
+
     return (
         <li>
             <Space.Compact
@@ -12,13 +17,13 @@ const EditTodo = ({title, id, update}) => {
             >
                 <Input
                     placeholder='Update todo'
-                    value={updatedTitle}
-                    onChange={event => setUpdatedTitle(event.target.value)}
-                    onPressEnter={() => update(id, updatedTitle)}
+                    value={text}
+                    onChange={event => dispatch(addText(event.target.value))}
+                    onPressEnter={() => dispatch(updateTodo(id, text))}
                 />
                 <Button
                     type={"primary"}
-                    onClick={() => update(id, updatedTitle)}
+                    onClick={() => dispatch(updateTodo(id, text))}
                 >Update
                 </Button>
             </Space.Compact>

@@ -1,13 +1,20 @@
 import React from 'react';
-import {TodoItemWithLogger} from "../TodoItem/TodoItem";
-import {EditTodoWithLogger} from "../EditTodo/EditTodo";
+import TodoItem, {TodoItemWithLogger} from "../TodoItem/TodoItem";
+import EditTodo, {EditTodoWithLogger} from "../EditTodo/EditTodo";
+import {useSelector} from "react-redux";
 
 
-const TodoList = ({todos , remove, edit, update}) => {
+const TodoList = () => {
+    const {todos} = useSelector(state => state.todos)
 
     return (
             <div>
-                {todos.map(item => item.isEdit ? <EditTodoWithLogger key={item.id} {...item} update={update}/> : <TodoItemWithLogger edit={edit}  remove={remove} key={item.id} {...item}/>)}
+                {todos.map(
+                    item => item.isEdit
+                        ?
+                        <EditTodo key={item.id} {...item}/>
+                        :
+                        <TodoItem key={item.id} {...item}/>)}
             </div>
     );
 };
