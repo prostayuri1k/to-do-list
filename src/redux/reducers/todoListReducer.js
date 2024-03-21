@@ -33,11 +33,11 @@ const todoListReducer = (state = initialState, action) => {
             return {
                 ...state,
                 todos: state.todos.map(item =>
-                        item.id === action.payload.id
-                            ?
-                            {...item, isEdit: !item.isEdit, title: action.payload.text}
-                            :
-                            item
+                    item.id === action.payload.id
+                        ?
+                        {...item, isEdit: !item.isEdit, title: action.payload.text}
+                        :
+                        item
                 )
             }
         default:

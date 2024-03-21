@@ -9,29 +9,23 @@ const TodoForm = () => {
     const dispatch = useDispatch();
     const {text} = useSelector(state => state.form);
 
+    const onAddTask = () => {
+        if (text.trim()) {
+            dispatch(addTodo(text));
+            dispatch(addText(''));
+        }
+    }
+
     return (
         <>
-            <Space.Compact
-                style={{width: '100%', marginBottom: '30px'}}
-            >
+            <Space.Compact style={{width: '100%', marginBottom: '30px'}}>
                 <Input
                     placeholder={'What is the task today?'}
                     value={text}
                     onChange={event => dispatch(addText(event.target.value))}
-                    onPressEnter={() => {
-                        dispatch(addTodo(text));
-                        dispatch(addText(''));
-                    }}
+                    onPressEnter={onAddTask}
                 />
-                <Button
-                    type={"primary"}
-                    onClick={() => {
-                        dispatch(addTodo(text));
-                        dispatch(addText(''));
-                    }}
-                >
-                    Add task
-                </Button>
+                <Button type={"primary"} onClick={onAddTask}>Add task</Button>
             </Space.Compact>
         </>
     );

@@ -5,6 +5,7 @@ import './TodoItem.css'
 import {withLoggerTodoItem} from "../withLogger/withLogger";
 import {useDispatch} from "react-redux";
 import {completeTodo, deleteTodo, editTodo} from "../../redux/actions/todoListAction";
+import {editTask} from "../../redux/actions/formActions";
 
 const TodoItem = ({title, id, isCompleted}) => {
 
@@ -26,7 +27,10 @@ const TodoItem = ({title, id, isCompleted}) => {
                 >
                     {title}
                 </Button>
-                <Button onClick={() => dispatch(editTodo(id))}>
+                <Button onClick={() => {
+                    dispatch(editTodo(id));
+                    dispatch(editTask(title))
+                }}>
                     <EditFilled/>
                 </Button>
                 <Button onClick={() => dispatch(deleteTodo(id))}>

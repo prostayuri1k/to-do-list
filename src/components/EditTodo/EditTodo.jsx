@@ -2,30 +2,31 @@ import React from 'react';
 import {Button, Input, Space} from "antd";
 import {withLoggerEditItem} from "../withLogger/withLogger";
 import {useDispatch, useSelector} from "react-redux";
-import {addText} from "../../redux/actions/formActions";
+import {editTask} from "../../redux/actions/formActions";
 import {updateTodo} from "../../redux/actions/todoListAction";
 
 const EditTodo = ({id}) => {
 
     const dispatch = useDispatch();
-    const {text} = useSelector(state => state.form)
+    const {editText} = useSelector(state => state.form);
+
+    const onUpdateTask = () => {
+        if (editText.trim()) {
+            dispatch(updateTodo(id, editText));
+            dispatch(editTask(''));
+        }
+    }
 
     return (
         <li>
-            <Space.Compact
-                style={{width: '100%'}}
-            >
+            <Space.Compact style={{width: '100%'}}>
                 <Input
                     placeholder='Update todo'
-                    value={text}
-                    onChange={event => dispatch(addText(event.target.value))}
-                    onPressEnter={() => dispatch(updateTodo(id, text))}
+                    value={editText}
+                    onChange={event => dispatch(editTask(event.target.value))}
+                    onPressEnter={onUpdateTask}
                 />
-                <Button
-                    type={"primary"}
-                    onClick={() => dispatch(updateTodo(id, text))}
-                >Update
-                </Button>
+                <Button type={"primary"} onClick={onUpdateTask}>Update</Button>
             </Space.Compact>
         </li>
     );
