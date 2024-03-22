@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import TodoList from "../TodoList/TodoList";
 import {Button, Input, Space} from "antd";
-import {NavLink} from "react-router-dom";
 import axios from "axios";
+import {getBaseURL, getToken} from "../../Helpers/helpers";
 
-const TodoField = () => {
+const TodoForm = () => {
 
     const [todoTitle, setTodoTitle] = useState('')
     const [todos, setTodos] = useState([]);
@@ -12,12 +12,12 @@ const TodoField = () => {
     const fetchTodos = async () => {
         try {
             let response = await axios.get(
-                'https://todo-redev.herokuapp.com/api/todos',
+                `${getBaseURL()}/api/todos`,
                 {
                     method: "GET",
                     headers: {
                         'accept': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${getToken()}`
                     }
                 }
             );
@@ -37,18 +37,18 @@ const TodoField = () => {
 
         try {
             const response = axios.post(
-                'https://todo-redev.herokuapp.com/api/todos',
+                `${getBaseURL()}/api/todos`,
                 newTodo,
                 {
                     headers: {
                         'accept': 'application/json',
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${getToken()}`
                     }
                 }
             )
-            const addedTask = (await response).data;
-            setTodos(prevTodos => [...prevTodos, addedTask]);
+            const {data} = await response;
+            setTodos(prevTodos => [...prevTodos, data]);
             setTodoTitle('');
         } catch (error) {
             console.log('Ошибка', error);
@@ -58,11 +58,11 @@ const TodoField = () => {
     const removeTodo = async (id) => {
         try {
             await axios.delete(
-                `https://todo-redev.herokuapp.com/api/todos/${id}`,
+                `${getBaseURL()}/api/todos/${id}`,
                 {
                     headers: {
                         'accept': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${getToken()}`
                     }
                 }
             )
@@ -75,21 +75,21 @@ const TodoField = () => {
     const completeTodo = async (id) => {
         try {
             await axios.patch(
-                `https://todo-redev.herokuapp.com/api/todos/${id}/isCompleted`,
+                `${getBaseURL()}/api/todos/${id}/isCompleted`,
                 id,
                 {
                     headers: {
                         'accept': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${getToken()}`
                     }
                 }
+            )
+            setTodos(
+                todos.map(item => item.id === id ? {...item, isCompleted: !item.isCompleted} : item)
             )
         } catch (error) {
             console.log(error)
         }
-        setTodos(
-            todos.map(item => item.id === id ? {...item, isCompleted: !item.isCompleted} : item)
-        )
     }
 
     const editTodo = (id) => {
@@ -101,12 +101,12 @@ const TodoField = () => {
     const updateTodo = async (id, task) => {
         try {
             await axios.patch(
-                `https://todo-redev.herokuapp.com/api/todos/${id}`,
+                `${getBaseURL()}/api/todos/${id}`,
                 {title: task},
                 {
                     headers: {
                         'accept': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                        'Authorization': `Bearer ${getToken()}`,
                         'Content-Type': 'application/json'
                     }
                 }
@@ -119,38 +119,28 @@ const TodoField = () => {
         )
     }
 
-    const logout = () => {
-        localStorage.removeItem('token');
-    }
-
     return (
         <div className='App-container'>
-            <div className='App-wrapper'>
-                <h1>Get things done!</h1>
-                <div className='todo-field'>
-                    <Space.Compact
-                        style={{width: '100%', marginBottom: '30px'}}
-                    >
-                        <Input
-                            placeholder='What is the task today?'
-                            value={todoTitle}
-                            onChange={event => setTodoTitle(event.target.value)}
-                            onPressEnter={addTodo}
-                        />
-                        <Button
-                            type={"primary"}
-                            onClick={addTodo}
-                        >Add task
-                        </Button>
-                    </Space.Compact>
-                    {todos?.length ? (
-                        <TodoList todos={todos} edit={editTodo} remove={removeTodo} update={updateTodo}
-                                  complete={completeTodo}/>) : (<></>)}
-                </div>
+            <div className='todo-field'>
+                <Space.Compact
+                    style={{width: '100%', marginBottom: '30px'}}
+                >
+                    <Input
+                        placeholder='What is the task today?'
+                        value={todoTitle}
+                        onChange={event => setTodoTitle(event.target.value)}
+                        onPressEnter={addTodo}
+                    />
+                    <Button
+                        type={"primary"}
+                        onClick={addTodo}
+                    >Add task
+                    </Button>
+                </Space.Compact>
+                {!!todos.length && (<TodoList todos={todos} edit={editTodo} remove={removeTodo} update={updateTodo} complete={completeTodo}/>)}
             </div>
-            <p><NavLink onClick={logout} to='/authorization'>Log Out</NavLink></p>
         </div>
     );
 };
 
-export default TodoField;
+export default TodoForm;
